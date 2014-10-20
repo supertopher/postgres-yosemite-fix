@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# Exit if any command fails
+set -e
+
+# If more than one argument given, run this script once for each argument
+
+test $2 && {
+  # $@ is the entire ARGV
+  for arg in $@
+    # $0 is the currently running script (install-unit)
+    do $0 $arg
+  done
+  exit
+}
+
+unit_dir=$1
+
+deps_file="$unit_dir/deps"
+guard_file="$unit_dir/installed.sh"
+install_file="$unit_dir/install.sh"
+
+test -d $unit_dir || {
+  echo "$unit_dir not found"
+}
+
+# Install unit
+echo "Installing $unit_dir"
+sh $install_file
+
+test -f $guard_file && (sh $guard_file ||  {
+  echo "Install script for $unit_dir finished, but install script failed"
+})
+
+echo "$unit_dir installed"
