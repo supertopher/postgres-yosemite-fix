@@ -1,0 +1,1 @@
+which -s postgres && test -S /tmp/.s.PGSQL.5432
