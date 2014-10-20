@@ -24,12 +24,22 @@ test -d $unit_dir || {
   echo "$unit_dir not found"
 }
 
-# Install unit
-echo "Installing $unit_dir"
-sh $install_file
+
+# Exit if there's a guard file and the guard detects an install
+test -f $guard_file && sh $guard_file && {
+  echo  "$unit_dir already installed"
+  exit
+}
+
+# Otherwise install deps (if the deps file contains some)
+test -s $deps_file && $0 `cat $deps_file`
 
 test -f $guard_file && (sh $guard_file ||  {
   echo "Install script for $unit_dir finished, but install script failed"
 })
+
+# Install unit
+echo "Installing $unit_dir"
+sh $install_file
 
 echo "$unit_dir installed"
