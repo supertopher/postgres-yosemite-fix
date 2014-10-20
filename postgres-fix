@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Exit if any command fails
+set -e
+
+# all directories will become the list of all units
+all_units='ls -d */' | sed 's/\///'
+
+./install-unit $all_units
